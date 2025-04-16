@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Search</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Light Mode Colors */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --border-color: #dee2e6;
+            --accent-color: #4a90e2;
+            --accent-color-dark: #3a7ac0;
+            --highlight-bg: #fff3cd;
+            --highlight-text: #664d03;
+            --table-hover-bg: #e9ecef;
+            --shadow-color: rgba(0, 0, 0, 0.07);
+            --atom-color: rgba(74, 144, 226, 0.15);
+            /* Icon Colors - Light Mode */
+            --icon-stroke: var(--border-color); /* Light border */
+            --icon-fill: var(--text-secondary); /* Light gray fill for sun */
+            --icon-button-bg-hover: rgba(0, 0, 0, 0.05);
+
+            --color-transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, fill 0.3s ease, stroke 0.3s ease;
+        }
+
+        html[data-theme="dark"] {
+            /* Dark Mode Colors */
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2a2a2a;
+            --text-primary: #e9ecef;
+            --text-secondary: #adb5bd;
+            --border-color: #444;
+            --accent-color: #5aa0f2;
+            --accent-color-dark: #4a90e2;
+            --highlight-bg: #664d03;
+            --highlight-text: #fff3cd;
+            --table-hover-bg: #3a3a3a;
+            --shadow-color: rgba(255, 255, 255, 0.05);
+            --atom-color: rgba(90, 160, 242, 0.15);
+             /* Icon Colors - Dark Mode */
+            --icon-stroke: var(--text-secondary); /* Lighter border */
+            --icon-fill: var(--text-primary);   /* Light fill for moon */
+            --icon-button-bg-hover: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            position: relative;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: var(--color-transition);
+        }
+
+        /* Atom Animation Styles */
+        .background-animation-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .atom {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            /* Adjust position as desired */
+            top: 5%;
+            left: 5%;
+            transform: scale(0.8); /* Make it a bit smaller */
+        }
+
+        .atom .nucleus {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: var(--atom-color);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 5px var(--atom-color);
+        }
+
+        .atom .orbit {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            border: 1px solid var(--atom-color);
+            border-radius: 50%;
+            transform-origin: center center;
+            transition: border-color 0.3s ease;
+        }
+
+        .atom .orbit1 {
+            width: 100%;
+            height: 100%;
+            transform: translate(-50%, -50%) rotate(45deg); /* Initial tilt */
+            animation: rotateOrbit1 12s linear infinite;
+        }
+
+        .atom .orbit2 {
+            width: 70%;
+            height: 70%;
+            transform: translate(-50%, -50%) rotate(-45deg); /* Initial tilt */
+            animation: rotateOrbit2 15s linear infinite reverse; /* Slower, reverse */
+        }
+         .atom .orbit3 {
+            width: 100%;
+            height: 40%; /* More elliptical */
+            transform: translate(-50%, -50%) rotate(90deg); /* Initial tilt */
+            animation: rotateOrbit3 18s linear infinite;
+        }
+
+
+        /* Add pseudo elements as electrons if desired */
+        .atom .orbit::before {
+            content: '';
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: var(--atom-color);
+            border-radius: 50%;
+            /* Position electron on the orbit */
+            top: 0; 
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: background-color 0.3s ease;
+        }
+
+        @keyframes rotateOrbit1 {
+            from { transform: translate(-50%, -50%) rotate(45deg) rotateZ(0deg); }
+            to { transform: translate(-50%, -50%) rotate(45deg) rotateZ(360deg); }
+        }
+
+        @keyframes rotateOrbit2 {
+             from { transform: translate(-50%, -50%) rotate(-45deg) rotateZ(0deg); }
+             to { transform: translate(-50%, -50%) rotate(-45deg) rotateZ(360deg); }
+        }
+         @keyframes rotateOrbit3 {
+             from { transform: translate(-50%, -50%) rotate(90deg) rotateY(0deg) rotateZ(0deg); }
+             to { transform: translate(-50%, -50%) rotate(90deg) rotateY(360deg) rotateZ(360deg); }
+        }
+
+        /* End Atom Animation Styles */
+
+        .header {
+            background-color: var(--bg-primary);
+            padding: 15px 60px 15px 30px;
+            box-shadow: 0 2px 4px var(--shadow-color);
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+            z-index: 10;
+            transition: var(--color-transition), box-shadow 0.3s ease;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: var(--accent-color);
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-align: center;
+            transition: var(--color-transition);
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle-button {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            padding: 5px;
+            border-radius: 50%;
+            cursor: pointer;
+            line-height: 0;
+            transition: background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px; /* Increased size */
+            height: 40px; /* Increased size */
+        }
+
+        .theme-toggle-button:hover {
+            background-color: var(--icon-button-bg-hover);
+        }
+
+        .theme-toggle-button svg {
+            width: 24px; /* Increased size */
+            height: 24px; /* Increased size */
+            display: block;
+            transition: var(--color-transition);
+        }
+
+        .theme-toggle-button svg .icon-stroke {
+            stroke: var(--icon-stroke);
+            stroke-width: 1.5;
+            fill: none;
+            transition: stroke 0.3s ease;
+        }
+        .theme-toggle-button svg .icon-fill {
+             fill: var(--icon-fill);
+             stroke: none;
+             transition: fill 0.3s ease;
+        }
+
+        /* Specific styling for Sun rays/center in Dark Mode */
+        html[data-theme="dark"] .sun-svg .icon-fill {
+            fill: var(--icon-stroke); /* Use stroke color (lighter) for fill in dark mode */
+        }
+
+        /* Hide sun svg in light mode, moon svg in dark mode */
+        html:not([data-theme="dark"]) .sun-svg {
+            display: none;
+        }
+        html[data-theme="dark"] .moon-svg {
+            display: none;
+        }
+        /* End Theme Toggle */
+
+        main {
+            flex-grow: 1;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 30px auto;
+            padding: 30px 40px;
+            background-color: var(--bg-primary);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            position: relative;
+            z-index: 1;
+            transition: var(--color-transition), box-shadow 0.3s ease;
+        }
+
+        .search-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .search-group label {
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            transition: var(--color-transition);
+        }
+
+        .search-input {
+            padding: 10px 15px;
+            box-sizing: border-box;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: var(--color-transition), border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        input[type="number"] { -moz-appearance: textfield; }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+        #results-container { opacity: 0; transition: opacity 0.5s ease-in-out; }
+        #results-container.visible { opacity: 1; }
+
+        #results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background-color: var(--bg-primary);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: var(--color-transition);
+        }
+
+        #results-table th, #results-table td {
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 0.9rem;
+            transition: var(--color-transition);
+        }
+
+        #results-table th {
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            font-weight: 600;
+            text-transform: none;
+            letter-spacing: 0px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        #results-table tbody tr { transition: background-color 0.15s ease; }
+        #results-table tbody tr:nth-child(even) { background-color: var(--bg-primary); }
+        #results-table tbody tr:nth-child(odd) { background-color: var(--bg-secondary); }
+        #results-table tbody tr:hover { background-color: var(--table-hover-bg); }
+        #results-table tbody tr:last-child td { border-bottom: none; }
+
+        #results-table mark {
+            background-color: var(--highlight-bg);
+            color: var(--highlight-text);
+            padding: 0.1em 0.2em;
+            border-radius: 3px;
+            font-weight: 500;
+            transition: var(--color-transition);
+        }
+
+        .status-container { display: flex; justify-content: center; align-items: center; min-height: 40px; margin: 25px 0 15px 0; }
+        #status-message { color: var(--text-secondary); text-align: center; font-style: italic; margin: 0; transition: var(--color-transition); }
+        .loader { border: 4px solid var(--bg-secondary); border-top: 4px solid var(--accent-color); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: none; transition: border-color 0.3s ease; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .no-results { text-align: center; padding: 20px; font-style: italic; color: var(--text-secondary); transition: var(--color-transition); }
+
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            width: 100%;
+            transition: var(--color-transition);
+        }
+        footer p { margin: 0; }
+
+        @media (max-width: 768px) {
+            body { min-height: calc(100vh + 60px); /* Adjust for footer maybe */}
+            .container { margin: 20px; padding: 20px; }
+            .header { padding: 10px 50px 10px 15px; }
+            .header h1 { font-size: 1.3rem; }
+            .theme-toggle-button { right: 10px; width: 30px; height: 30px; }
+            .theme-toggle-button svg { width: 18px; height: 18px; }
+            .search-container { grid-template-columns: 1fr; gap: 15px; }
+            #results-table th, #results-table td { padding: 10px 12px; font-size: 0.85rem; }
+            .atom { top: 2%; left: 2%; transform: scale(0.6); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="background-animation-container">
+        <div class="atom">
+            <div class="nucleus"></div>
+            <div class="orbit orbit1"></div>
+            <div class="orbit orbit2"></div>
+            <div class="orbit orbit3"></div>
+        </div>
+        <!-- Add more .atom divs here for more animations -->
+    </div>
+
+    <main>
+        <header class="header">
+            <h1><a href="/" style="text-decoration: none; color: inherit;">II PU RESULTS(SCIENCE)</a></h1>
+            <button id="theme-toggle" class="theme-toggle-button" title="Toggle light/dark mode">
+                <!-- Moon SVG Icon -->
+                <svg class="moon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" class="icon-stroke"></circle>
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" class="icon-fill"></path>
+                </svg>
+                <!-- Sun SVG Icon -->
+                <svg class="sun-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" class="icon-stroke"></circle>
+                    <circle cx="12" cy="12" r="4" class="icon-fill"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3" class="icon-fill"></line>
+                    <line x1="12" y1="21" x2="12" y2="23" class="icon-fill"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" class="icon-fill"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" class="icon-fill"></line>
+                    <line x1="1" y1="12" x2="3" y2="12" class="icon-fill"></line>
+                    <line x1="21" y1="12" x2="23" y2="12" class="icon-fill"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" class="icon-fill"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" class="icon-fill"></line>
+                </svg>
+            </button>
+        </header>
+
+        <div class="container">
+            <!-- Search inputs -->
+            <div class="search-container">
+                <div class="search-group">
+                    <label for="search-reg-no">Registration No</label>
+                    <input type="text" id="search-reg-no" class="search-input" data-field="registration_number" placeholder="Partial match...">
+                </div>
+                <div class="search-group">
+                    <label for="search-name">Student Name</label>
+                    <input type="text" id="search-name" class="search-input" data-field="student_name" placeholder="Partial match...">
+                </div>
+                <div class="search-group">
+                    <label for="search-marks">Total Marks</label>
+                    <input type="number" id="search-marks" class="search-input" data-field="total_marks" placeholder="Exact match...">
+                </div>
+            </div>
+
+            <!-- Status/Loader -->
+            <div class="status-container">
+                <div id="loader" class="loader"></div>
+                <div id="status-message">Enter criteria in one of the boxes above to search...</div>
+            </div>
+
+            <!-- Results Area -->
+            <div id="results-container">
+                <table id="results-table">
+                    <thead>
+                        <tr>
+                            <th>Registration Number</th>
+                            <th>Student Name</th>
+                            <th>Total Marks</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-body">
+                        <!-- Results will be inserted here by JavaScript -->
+                    </tbody>
+                </table>
+                <div id="no-results-message" class="no-results" style="display: none;">
+                    No matching records found.
+                </div>
+            </div>
+
+        </div> <!-- End Container -->
+    </main>
+
+    <footer>
+        <p>Disclaimer: This is built only for educational purposes.</p>
+    </footer>
+
+    <script>
+        // --- Theme Toggle --- 
+        const themeToggle = document.getElementById('theme-toggle');
+        const currentTheme = localStorage.getItem('theme') ? localStorage.getItem('theme') : null;
+        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+        }
+
+        if (currentTheme) {
+            applyTheme(currentTheme);
+        } else if (prefersDarkScheme.matches) {
+            applyTheme('dark');
+        } else {
+            applyTheme('light'); 
+        }
+
+        themeToggle.addEventListener('click', () => {
+            let currentTheme = document.documentElement.getAttribute('data-theme');
+            let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            applyTheme(newTheme);
+        });
+
+        prefersDarkScheme.addEventListener('change', (e) => {
+            if (!localStorage.getItem('theme')) {
+                 applyTheme(e.matches ? 'dark' : 'light');
+            }
+        });
+
+        // --- Search Logic --- 
+        const searchInputs = document.querySelectorAll('.search-input');
+        const resultsBody = document.getElementById('results-body');
+        const statusMessage = document.getElementById('status-message');
+        const loader = document.getElementById('loader');
+        const resultsContainer = document.getElementById('results-container');
+        const noResultsMessage = document.getElementById('no-results-message');
+        let searchTimeout = null;
+
+        function escapeRegExp(string) {
+            return string.replace(/[.*+\-?^{}()|[\]\\]/g, '\\$&');
+        }
+
+        function highlightMatch(text, query) {
+            if (!query || typeof text !== 'string') {
+                return text;
+            }
+            const escapedQuery = escapeRegExp(query);
+            const regex = new RegExp(`(${escapedQuery})`, 'gi');
+            return text.replace(regex, '<mark>$1</mark>');
+        }
+
+        searchInputs.forEach(input => {
+            input.addEventListener('input', (event) => {
+                const currentInput = event.target;
+                const field = currentInput.dataset.field;
+                const query = currentInput.value.trim();
+
+                searchInputs.forEach(otherInput => {
+                    if (otherInput !== currentInput) {
+                        otherInput.value = '';
+                    }
+                });
+
+                clearTimeout(searchTimeout);
+                resultsContainer.classList.remove('visible');
+                if (query.length > 0) {
+                    searchTimeout = setTimeout(() => {
+                        performSearch(field, query);
+                    }, 350);
+                } else {
+                    resultsBody.innerHTML = '';
+                    loader.style.display = 'none';
+                    statusMessage.style.display = 'block';
+                    statusMessage.textContent = 'Enter criteria in one of the boxes above to search...';
+                    noResultsMessage.style.display = 'none';
+                    resultsContainer.classList.remove('visible');
+                }
+            });
+        });
+
+        async function performSearch(field, query) {
+            resultsBody.innerHTML = '';
+            noResultsMessage.style.display = 'none';
+            statusMessage.style.display = 'none';
+            loader.style.display = 'block';
+            resultsContainer.classList.remove('visible');
+
+            if (!field || query.length < 1) {
+                 loader.style.display = 'none';
+                 statusMessage.style.display = 'block';
+                 statusMessage.textContent = 'Enter valid criteria to search...';
+                 return;
+            }
+
+            if (field === 'total_marks' && !/^\d+$/.test(query)) {
+                loader.style.display = 'none';
+                statusMessage.style.display = 'block';
+                statusMessage.textContent = 'Please enter only numbers for marks.';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/search?field=${encodeURIComponent(field)}&q=${encodeURIComponent(query)}`);
+                loader.style.display = 'none';
+
+                if (!response.ok) {
+                    let errorMsg = `HTTP error! Status: ${response.status}`;
+                    try {
+                        const errorData = await response.json();
+                        if(errorData.error) {
+                            errorMsg = errorData.error;
+                        }
+                    } catch(jsonError) { /* Ignore */ }
+                    throw new Error(errorMsg);
+                }
+                const results = await response.json();
+
+                if (results.length > 0) {
+                    results.forEach(student => {
+                        const row = resultsBody.insertRow();
+                        const cell1 = row.insertCell(0);
+                        const cell2 = row.insertCell(1);
+                        const cell3 = row.insertCell(2);
+                        cell1.innerHTML = (field === 'registration_number') ? highlightMatch(student.registration_number, query) : student.registration_number;
+                        cell2.innerHTML = (field === 'student_name') ? highlightMatch(student.student_name, query) : student.student_name;
+                        cell3.textContent = student.total_marks;
+                    });
+                    document.getElementById('results-table').style.display = '';
+                    noResultsMessage.style.display = 'none';
+                } else {
+                    document.getElementById('results-table').style.display = 'none';
+                    noResultsMessage.style.display = 'block';
+                }
+                resultsContainer.classList.add('visible');
+
+            } catch (error) {
+                console.error('Error fetching search results:', error);
+                resultsBody.innerHTML = '';
+                loader.style.display = 'none';
+                statusMessage.style.display = 'block';
+                statusMessage.textContent = `Error: ${error.message || 'Failed to perform search.'}`;
+                noResultsMessage.style.display = 'none';
+                resultsContainer.classList.remove('visible');
+            }
+        }
+
+        // Initial state
+        statusMessage.textContent = 'Enter criteria in one of the boxes above to search...';
+        loader.style.display = 'none';
+        noResultsMessage.style.display = 'none';
+        resultsContainer.classList.remove('visible');
+
+    </script>
+
+</body>
+</html> 

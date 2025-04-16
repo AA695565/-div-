@@ -1,0 +1,17 @@
+        # Database file (generated, potentially large)
+        data/students.db
+
+        # Python cache files
+        __pycache__/
+        *.pyc
+
+        # Virtual environment (if you use one)
+        venv/
+        */venv/
+        .venv/
+
+        # OS-specific files
+        .DS_Store
+        Thumbs.db
+
+        # Add any other files you don't want tracked
