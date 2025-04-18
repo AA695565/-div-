@@ -31,6 +31,7 @@
             --highlight-bg-light: hsla(var(--hue-neon), 80%, 80%, 0.3);
             --highlight-text-light: hsl(var(--hue-neon), 80%, 30%);
             --table-hover-bg-light: #e0e7ef;
+            --atom-color-light: hsl(var(--hue-neon), 60%, 45%); /* Atom color for light */
 
             /* Dark Mode (Default for this theme) */
             --bg-primary-dark: #0d1117; /* Very dark blue/black */
@@ -48,6 +49,7 @@
             --highlight-bg-dark: hsla(var(--hue-neon), 90%, 65%, 0.15);
             --highlight-text-dark: hsl(var(--hue-neon), 90%, 75%);
             --table-hover-bg-dark: #21262d;
+            --atom-color-dark: hsl(var(--hue-neon), 70%, 55%); /* Atom color for dark */
 
             /* Assign default theme (dark) */
             --bg-primary: var(--bg-primary-dark);
@@ -65,6 +67,7 @@
             --highlight-bg: var(--highlight-bg-dark);
             --highlight-text: var(--highlight-text-dark);
             --table-hover-bg: var(--table-hover-bg-dark);
+            --atom-color: var(--atom-color-dark); /* Assign default atom color */
 
             /* Transitions */
             --color-transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, fill 0.3s ease, stroke 0.3s ease, box-shadow 0.3s ease;
@@ -87,6 +90,7 @@
             --highlight-bg: var(--highlight-bg-light);
             --highlight-text: var(--highlight-text-light);
             --table-hover-bg: var(--table-hover-bg-light);
+            --atom-color: var(--atom-color-light); /* Reassign atom color for light */
         }
 
         body {
@@ -374,11 +378,11 @@
 
         /* Main atom container */
         .atom {
-            display: block; /* Changed from inline-block */
+            display: block;
             position: relative;
             width: 300px; /* Large size, adjust as needed */
             height: 300px;
-            opacity: 1; /* Keep slight fade */
+            opacity: 0.5; /* Make it faint */
             vertical-align: middle;
         }
 
@@ -386,7 +390,7 @@
             position: absolute;
             width: 25px; /* Scale nucleus */
             height: 25px;
-            background-color: var(--atom-color);
+            background-color: var(--atom-color); /* Use theme color */
             border-radius: 50%;
             top: 50%;
             left: 50%;
@@ -399,7 +403,7 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            border: 2px solid var(--atom-color); /* Thicker border */
+            border: 2px solid var(--atom-color); /* Use theme color */
             border-radius: 50%;
             transform-origin: center center;
             transition: border-color 0.3s ease;
@@ -428,7 +432,7 @@
             position: absolute;
             width: 10px; /* Larger electron */
             height: 10px;
-            background-color: var(--atom-color);
+            background-color: var(--atom-color); /* Use theme color */
             border-radius: 50%;
             top: 0;
             left: 50%;
@@ -537,8 +541,7 @@
     </div>
 
     <footer>
-        <p>Disclaimer: This is built only for educational purposes.<br/>
-        </p>
+        <p>Disclaimer: This is built only for educational purposes.</p>
     </footer>
 
     <script>
